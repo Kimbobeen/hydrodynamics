@@ -1,0 +1,51 @@
+/* 기존 CSS에서 색상만 밝은 초록과 파랑 계열로 변경 */
+body {
+  background: linear-gradient(135deg, #4fc3f7 0%, #81c784 100%);
+}
+.intro-container, .game-container {
+  background: rgba(220, 245, 255, 0.85);
+  box-shadow: 0 8px 32px 0 rgba(79, 195, 247, 0.25);
+}
+.intro-title {
+  color: #1976d2;
+  text-shadow: 2px 4px 12px #b2ebf2cc;
+}
+.start-btn {
+  background: linear-gradient(90deg, #81c784 0%, #4fc3f7 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(129,199,132,0.3);
+}
+.start-btn:hover {
+  background: linear-gradient(90deg, #4fc3f7 0%, #81c784 100%);
+}
+.honey-illustration .nozzle {
+  background: #64b5f6;
+  border: 3px solid #1976d2;
+  box-shadow: 0 2px 8px #1976d233;
+}
+.honey-illustration .honey-flow {
+  background: linear-gradient(180deg, #ffd54f 60%, #ffb300 100%);
+  box-shadow: 0 0 16px #ffd54f88;
+}
+.honey-illustration .jar {
+  background: #fffde7;
+  border: 6px solid #81c784;
+  box-shadow: 0 8px 32px #81c78444;
+}
+.honey-illustration .jar-honey {
+  background: linear-gradient(180deg, #ffd54f 60%, #ffb300 100%);
+  box-shadow: 0 0 16px #ffd54f88;
+}
+.honey-label {
+  color: #1976d2;
+  text-shadow: 1px 2px 8px #b2ebf2cc;
+  background: rgba(129, 212, 250, 0.7);
+}
+.choice-btn {
+  background: linear-gradient(90deg, #b3e5fc 0%, #4fc3f7 100%);
+  color: #1976d2;
+  box-shadow: 0 2px 8px rgba(79,195,247,0.3);
+}
+.choice-btn:hover {
+  background: linear-gradient(90deg, #4fc3f7 0%, #b3e5fc 100%);
+}

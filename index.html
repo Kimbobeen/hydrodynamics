@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>점탄성 유체 공정 시뮬레이터</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #4fc3f7 0%, #81c784 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .intro-container {
+      background: rgba(220, 245, 255, 0.85);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(79, 195, 247, 0.25);
+      padding: 60px 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .intro-title {
+      font-size: 2.7rem;
+      color: #1976d2;
+      font-weight: bold;
+      margin-bottom: 24px;
+      letter-spacing: 2px;
+      text-shadow: 2px 4px 12px #b2ebf2cc;
+    }
+    .emojis {
+      font-size: 2.2rem;
+      margin-bottom: 32px;
+      user-select: none;
+    }
+    .start-btn {
+      padding: 18px 54px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #fff;
+      background: linear-gradient(90deg, #81c784 0%, #4fc3f7 100%);
+      border: none;
+      border-radius: 32px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(129,199,132,0.3);
+      transition: background 0.3s, transform 0.2s;
+    }
+    .start-btn:hover {
+      background: linear-gradient(90deg, #4fc3f7 0%, #81c784 100%);
+      transform: scale(1.05);
+    }
+    .game-container, .wrong-container {
+      display: none;
+      color: #1976d2;
+      font-size: 1.1rem;
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(220, 245, 255, 0.85);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(129,199,132,0.15);
+      min-width: 400px;
+      min-height: 500px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .honey-illustration {
+      margin: 0 auto 24px auto;
+      position: relative;
+      width: 220px;
+      height: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .nozzle {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 40px;
+      background: #64b5f6;
+      border-radius: 20px 20px 30px 30px;
+      z-index: 2;
+      border: 3px solid #1976d2;
+      box-shadow: 0 2px 8px #1976d233;
+    }
+    .honey-flow {
+      position: absolute;
+      top: 35px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 120px;
+      background: linear-gradient(180deg, #ffd54f 60%, #ffb300 100%);
+      border-radius: 16px;
+      z-index: 1;
+      animation: honeyDrop 1.2s infinite alternate;
+      box-shadow: 0 0 16px #ffd54f88;
+    }
+    @keyframes honeyDrop {
+      0% { height: 100px; }
+      100% { height: 130px; }
+    }
+    .jar {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 160px;
+      background: #fffde7;
+      border: 6px solid #81c784;
+      border-radius: 40px 40px 60px 60px / 60px 60px 100px 100px;
+      z-index: 2;
+      box-shadow: 0 8px 32px #81c78444;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .jar-honey {
+      width: 100px;
+      height: 70px;
+      background: linear-gradient(180deg, #ffd54f 60%, #ffb300 100%);
+      border-radius: 0 0 50px 50px / 0 0 60px 60px;
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      box-shadow: 0 0 16px #ffd54f88;
+    }
+    /* ...existing code... */
+.honey-label {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px; /* 기존 220px에서 280px로 증가 */
+  color: #1976d2;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-shadow: 1px 2px 8px #b2ebf2cc;
+  background: rgba(129, 212, 250, 0.7);
+  border-radius: 12px;
+  padding: 8px 0;
+  z-index: 10;
+  pointer-events: none;
+}
+/* ...existing code... */
+    .choice-btn {
+      margin: 18px 0 0 0;
+      padding: 16px 32px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #1976d2;
+      background: linear-gradient(90deg, #b3e5fc 0%, #4fc3f7 100%);
+      border: none;
+      border-radius: 28px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(79,195,247,0.3);
+      transition: background 0.3s, transform 0.2s;
+      display: block;
+      width: 90%;
+      max-width: 320px;
+    }
+    .choice-btn:hover {
+      background: linear-gradient(90deg, #4fc3f7 0%, #b3e5fc 100%);
+      transform: scale(1.04);
+    }
+    .choice-btn + .choice-btn {
+      margin-top: 12px;
+    }
+    /* 잘못된 선택 애니메이션용 */
+    .wrong-illustration {
+      margin: 0 auto 24px auto;
+      position: relative;
+      width: 220px;
+      height: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wrong-nozzle {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 40px;
+      background: #64b5f6;
+      border-radius: 20px 20px 30px 30px;
+      z-index: 2;
+      border: 3px solid #1976d2;
+      box-shadow: 0 2px 8px #1976d233;
+    }
+    .wrong-honey-flow {
+      position: absolute;
+      top: 35px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      background: linear-gradient(180deg, #ffd54f 60%, #ffb300 100%);
+      border-radius: 16px;
+      z-index: 1;
+      box-shadow: 0 0 16px #ffd54f88;
+      /* height와 애니메이션은 JS에서 제어 */
+    }
+    .wrong-jar {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 160px;
+      background: #fffde7;
+      border: 6px solid #81c784;
+      border-radius: 40px 40px 60px 60px / 60px 60px 100px 100px;
+      z-index: 2;
+      box-shadow: 0 8px 32px #81c78444;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .wrong-jar-honey {
+      width: 100px;
+      height: 70px;
+      background: linear-gradient(180deg, #ffd54f 60%, #ffb300 100%);
+      border-radius: 0 0 50px 50px / 0 0 60px 60px;
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      box-shadow: 0 0 16px #ffd54f88;
+    }
+    .wrong-honey-splash {
+      display: none;
+      position: absolute;
+      left: 50%;
+      top: 60px;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 60px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .wrong-honey-splash svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .wrong-label-box {
+      display: none;
+      margin: 30px auto 0 auto;
+      background: #fff9c4;
+      color: #b8860b;
+      border-radius: 16px;
+      padding: 24px 18px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      box-shadow: 0 2px 8px #ffe08288;
+      max-width: 350px;
+      text-align: center;
+    }
+    .retry-btn {
+      display: none;
+      margin: 18px auto 0 auto;
+      padding: 14px 32px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #fff;
+      background: linear-gradient(90deg, #ffd54f 0%, #ffb300 100%);
+      border: none;
+      border-radius: 28px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #ffd54f55;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .retry-btn:hover {
+      background: linear-gradient(90deg, #ffb300 0%, #ffd54f 100%);
+      transform: scale(1.04);
+    }
+    @media (max-width: 500px) {
+      .game-container, .wrong-container {
+        min-width: 90vw;
+        padding: 10px 2vw;
+      }
+      .honey-illustration, .wrong-illustration {
+        width: 90vw;
+        height: 60vw;
+        min-width: 180px;
+        min-height: 220px;
+      }
+      .honey-label {
+        width: 90vw;
+        font-size: 1rem;
+      }
+      .wrong-label-box {
+        max-width: 90vw;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 시작화면 -->
+  <div class="intro-container" id="intro">
+    <div class="emojis">🌊🧪✨🚀🧬🔬💡🎮</div>
+    <div class="intro-title">점탄성 유체 공정 시뮬레이터</div>
+    <button class="start-btn" id="startBtn">시작하기</button>
+  </div>
+  <!-- 게임화면 -->
+  <div class="game-container" id="game">
+    <div class="honey-illustration">
+      <div class="nozzle"></div>
+      <div class="honey-flow"></div>
+      <div class="jar">
+        <div class="jar-honey"></div>
+      </div>
+      <div class="honey-label">
+        꿀이 튕겨져 나가서 카예 효과가 발생할 것입니다. 어떻게 해야할까요?
+      </div>
+    </div>
+    <button class="choice-btn" id="choice1">주입구와 통사이 거리를 늘린다</button>
+    <button class="choice-btn" id="choice2">주입구와 통사이 거리를 좁힌다</button>
+  </div>
+  <!-- 잘못된 선택(거리를 늘린다) 애니메이션 및 결과 화면 -->
+  <div class="wrong-container" id="wrongPage">
+    <div class="wrong-illustration">
+      <div class="wrong-nozzle"></div>
+      <div class="wrong-honey-flow" id="wrongHoneyFlow"></div>
+      <div class="wrong-jar">
+        <div class="wrong-jar-honey"></div>
+      </div>
+      <div class="wrong-honey-splash" id="honeySplash">
+        <!-- SVG로 꿀 튀는 효과 -->
+        <svg viewBox="0 0 120 60">
+          <ellipse cx="60" cy="30" rx="40" ry="12" fill="#ffd54f" opacity="0.85"/>
+          <ellipse cx="30" cy="20" rx="10" ry="4" fill="#ffd54f" opacity="0.7"/>
+          <ellipse cx="90" cy="18" rx="8" ry="3" fill="#ffd54f" opacity="0.7"/>
+          <ellipse cx="60" cy="50" rx="18" ry="5" fill="#ffb300" opacity="0.6"/>
+        </svg>
+      </div>
+    </div>
+    <div class="wrong-label-box" id="wrongLabelBox">
+      유체의 낙하 높이를 늘려서 탄성에너지가 증가하였습니다.<br>
+      이로인해 카예 효과가 더 심해졌습니다.<br>
+      다시 시도 하십시오
+    </div>
+    <button class="retry-btn" id="retryBtn">다시시도하기</button>
+  </div>
+ <script>
+    // 시작하기 버튼 클릭 시 게임 화면으로 전환
+    document.getElementById('startBtn').addEventListener('click', function() {
+      document.getElementById('intro').style.display = 'none';
+      document.getElementById('game').style.display = 'flex';
+      document.getElementById('wrongPage').style.display = 'none';
+    });
+
+    // "주입구와 통사이 거리를 늘린다" 선택 시 애니메이션 페이지로 전환
+    document.getElementById('choice1').addEventListener('click', function() {
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('wrongPage').style.display = 'flex';
+
+      // 초기화
+      var honeyFlow = document.getElementById('wrongHoneyFlow');
+      var splash = document.getElementById('honeySplash');
+      var labelBox = document.getElementById('wrongLabelBox');
+      var retryBtn = document.getElementById('retryBtn');
+      honeyFlow.style.height = '0px';
+      honeyFlow.style.display = 'block';
+      splash.style.display = 'none';
+      labelBox.style.display = 'none';
+      retryBtn.style.display = 'none';
+
+      // 꿀이 흐르는 애니메이션 (3초)
+      var duration = 3000;
+      var start = null;
+      function animateHoneyFlow(timestamp) {
+        if (!start) start = timestamp;
+        var elapsed = timestamp - start;
+        var maxHeight = 180;
+        var height = Math.min(maxHeight, (elapsed / duration) * maxHeight);
+        honeyFlow.style.height = height + 'px';
+        honeyFlow.style.top = (35) + 'px';
+        if (elapsed < duration) {
+          requestAnimationFrame(animateHoneyFlow);
+        } else {
+          // 꿀 튀는 애니메이션
+          honeyFlow.style.display = 'none';
+          splash.style.display = 'block';
+          // 1초 후 결과 박스와 버튼 표시
+          setTimeout(function() {
+            labelBox.style.display = 'block';
+            retryBtn.style.display = 'block';
+          }, 1000);
+        }
+      }
+      requestAnimationFrame(animateHoneyFlow);
+    });
+
+    // 다시시도하기 버튼 클릭 시 게임 화면으로 복귀
+    document.getElementById('retryBtn').addEventListener('click', function() {
+      document.getElementById('wrongPage').style.display = 'none';
+      document.getElementById('game').style.display = 'flex';
+    });
+
+    // "주입구와 통사이 거리를 좁힌다" 선택 시 stage1.html로 이동
+    document.getElementById('choice2').addEventListener('click', function() {
+      location.href = 'stage1.html';
+    });
+  </script>
+</body>
+</html>
+

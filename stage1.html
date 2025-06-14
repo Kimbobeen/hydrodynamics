@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>점탄성 유체 공정 시뮬레이터 - 성공</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #4fc3f7 0%, #81c784 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .success-container {
+      color: #1976d2;
+      font-size: 1.1rem;
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(220, 245, 255, 0.85);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(129,199,132,0.15);
+      min-width: 400px;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .success-box {
+      margin: 40px auto 0 auto;
+      background: #fff9c4;
+      color: #b8860b;
+      border-radius: 16px;
+      padding: 24px 18px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      box-shadow: 0 2px 8px #ffe08288;
+      max-width: 350px;
+      text-align: center;
+    }
+    .next-btn {
+      margin: 28px auto 0 auto;
+      padding: 14px 32px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #fff;
+      background: linear-gradient(90deg, #ffd54f 0%, #ffb300 100%);
+      border: none;
+      border-radius: 28px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #ffd54f55;
+      transition: background 0.3s, transform 0.2s;
+      display: block;
+    }
+    .next-btn:hover {
+      background: linear-gradient(90deg, #ffb300 0%, #ffd54f 100%);
+      transform: scale(1.04);
+    }
+    .stage2-container, .fail-container {
+      display: none;
+      color: #1976d2;
+      font-size: 1.1rem;
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(220, 245, 255, 0.85);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(129,199,132,0.15);
+      min-width: 400px;
+      min-height: 500px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .honey-illustration {
+      margin: 0 auto 24px auto;
+      position: relative;
+      width: 220px;
+      height: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .nozzle-thick {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 48px;
+      background: #64b5f6;
+      border-radius: 28px 28px 38px 38px;
+      z-index: 2;
+      border: 5px solid #1976d2;
+      box-shadow: 0 2px 8px #1976d233;
+    }
+    .honey-flow {
+      position: absolute;
+      top: 43px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 28px;
+      height: 120px;
+      background: linear-gradient(180deg, #ffd54f 60%, #ffb300 100%);
+      border-radius: 16px;
+      z-index: 1;
+      animation: honeyDrop 1.2s infinite alternate;
+      box-shadow: 0 0 16px #ffd54f88;
+    }
+    @keyframes honeyDrop {
+      0% { height: 100px; }
+      100% { height: 130px; }
+    }
+    .jar {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 160px;
+      background: #fffde7;
+      border: 6px solid #81c784;
+      border-radius: 40px 40px 60px 60px / 60px 60px 100px 100px;
+      z-index: 2;
+      box-shadow: 0 8px 32px #81c78444;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .jar-honey {
+      width: 100px;
+      height: 70px;
+      background: linear-gradient(180deg, #ffd54f 60%, #ffb300 100%);
+      border-radius: 0 0 50px 50px / 0 0 60px 60px;
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      box-shadow: 0 0 16px #ffd54f88;
+    }
+    .honey-label {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      color: #1976d2;
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-shadow: 1px 2px 8px #b2ebf2cc;
+      background: rgba(129, 212, 250, 0.7);
+      border-radius: 12px;
+      padding: 8px 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .choice-btn {
+      margin: 18px 0 0 0;
+      padding: 16px 32px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #1976d2;
+      background: linear-gradient(90deg, #b3e5fc 0%, #4fc3f7 100%);
+      border: none;
+      border-radius: 28px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(79,195,247,0.3);
+      transition: background 0.3s, transform 0.2s;
+      display: block;
+      width: 90%;
+      max-width: 340px;
+    }
+    .choice-btn:hover {
+      background: linear-gradient(90deg, #4fc3f7 0%, #b3e5fc 100%);
+      transform: scale(1.04);
+    }
+    .choice-btn + .choice-btn {
+      margin-top: 12px;
+    }
+    /* 실패 애니메이션 및 결과 */
+    .fail-illustration {
+      margin: 0 auto 24px auto;
+      position: relative;
+      width: 220px;
+      height: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .fail-nozzle-thick {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 48px;
+      background: #64b5f6;
+      border-radius: 28px 28px 38px 38px;
+      z-index: 2;
+      border: 5px solid #1976d2;
+      box-shadow: 0 2px 8px #1976d233;
+    }
+    .fail-honey-flow {
+      position: absolute;
+      top: 43px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 28px;
+      background: linear-gradient(180deg, #ffd54f 60%, #ffb300 100%);
+      border-radius: 16px;
+      z-index: 1;
+      box-shadow: 0 0 16px #ffd54f88;
+    }
+    .fail-jar {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 160px;
+      background: #fffde7;
+      border: 6px solid #81c784;
+      border-radius: 40px 40px 60px 60px / 60px 60px 100px 100px;
+      z-index: 2;
+      box-shadow: 0 8px 32px #81c78444;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .fail-jar-honey {
+      width: 100px;
+      height: 70px;
+      background: linear-gradient(180deg, #ffd54f 60%, #ffb300 100%);
+      border-radius: 0 0 50px 50px / 0 0 60px 60px;
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      box-shadow: 0 0 16px #ffd54f88;
+    }
+    .fail-dirty {
+      display: none;
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 30px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .fail-dirty svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .fail-label-box {
+      display: none;
+      margin: 30px auto 0 auto;
+      background: #fff9c4;
+      color: #b8860b;
+      border-radius: 16px;
+      padding: 24px 18px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      box-shadow: 0 2px 8px #ffe08288;
+      max-width: 350px;
+      text-align: center;
+    }
+    .retry-btn {
+      display: none;
+      margin: 18px auto 0 auto;
+      padding: 14px 32px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #fff;
+      background: linear-gradient(90deg, #ffd54f 0%, #ffb300 100%);
+      border: none;
+      border-radius: 28px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #ffd54f55;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .retry-btn:hover {
+      background: linear-gradient(90deg, #ffb300 0%, #ffd54f 100%);
+      transform: scale(1.04);
+    }
+    @media (max-width: 500px) {
+      .success-container, .stage2-container, .fail-container {
+        min-width: 90vw;
+        padding: 10px 2vw;
+      }
+      .honey-illustration, .fail-illustration {
+        width: 90vw;
+        height: 60vw;
+        min-width: 180px;
+        min-height: 220px;
+      }
+      .honey-label {
+        width: 90vw;
+        font-size: 1rem;
+      }
+      .success-box, .fail-label-box {
+        max-width: 90vw;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 성공 화면 -->
+  <div class="success-container" id="successPage">
+    <div class="success-box">
+      유체의 낙하 높이를 줄여 탄성에너지를 감소시켰습니다.<br>
+      이로써 성공적으로 '카예 효과'를 억제하였습니다.
+    </div>
+    <button class="next-btn" id="nextBtn">다음</button>
+  </div>
+  <!-- stage2 미리보기(다음 단계) -->
+  <div class="stage2-container" id="stage2Page">
+    <div class="honey-illustration">
+      <div class="nozzle-thick"></div>
+      <div class="honey-flow"></div>
+      <div class="jar">
+        <div class="jar-honey"></div>
+      </div>
+      <div class="honey-label">
+        바러스효과로 인해 통이 더렵혀질 위험에 처했습니다. 어떻게 해야할까요?
+      </div>
+    </div>
+    <button class="choice-btn" id="choice1">
+      길고 가는, 주입구 출구쪽으로 갈수록 점진적으로 넓어지는 노즐을 사용한다.
+    </button>
+    <button class="choice-btn" id="choice2">
+      짧고 굵은, 일자형 노즐을 사용한다.
+    </button>
+  </div>
+  <!-- 실패 애니메이션 및 결과 화면 -->
+  <div class="fail-container" id="failPage">
+    <div class="fail-illustration">
+      <div class="fail-nozzle-thick"></div>
+      <div class="fail-honey-flow" id="failHoneyFlow"></div>
+      <div class="fail-jar">
+        <div class="fail-jar-honey"></div>
+      </div>
+      <div class="fail-dirty" id="failDirty">
+        <!-- SVG로 통이 더럽혀진 효과 -->
+        <svg viewBox="0 0 110 30">
+          <ellipse cx="30" cy="18" rx="18" ry="7" fill="#bdb76b" opacity="0.7"/>
+          <ellipse cx="80" cy="15" rx="20" ry="8" fill="#bdb76b" opacity="0.6"/>
+          <ellipse cx="55" cy="25" rx="15" ry="5" fill="#bdb76b" opacity="0.5"/>
+        </svg>
+      </div>
+    </div>
+    <div class="fail-label-box" id="failLabelBox">
+      짧고 굵은, 일자형 노즐을 사용함으로써 '바러스효과'가 극대화 되었습니다.<br>
+      다시 시도 하십시오
+    </div>
+    <button class="retry-btn" id="retryBtn">다시시도하기</button>
+  </div>
+  <!-- ...생략... -->
+<!-- ...existing code... -->
+<script>
+  // "다음" 버튼 클릭 시 stage2 화면으로 전환
+  document.getElementById('nextBtn').addEventListener('click', function() {
+    document.getElementById('successPage').style.display = 'none';
+    document.getElementById('stage2Page').style.display = 'flex';
+    document.getElementById('failPage').style.display = 'none';
+  });
+
+  // "길고 가는..." 선택지(정답) 예시
+  document.getElementById('choice1').onclick = function() {
+    alert('정답! (다음 단계로 이동하도록 구현하세요)');
+    // location.href = 'stage3.html';
+  };
+
+  // "짧고 굵은..." 선택지(오답) - 애니메이션 및 결과
+  document.getElementById('choice2').onclick = function() {
+    document.getElementById('stage2Page').style.display = 'none';
+    document.getElementById('failPage').style.display = 'flex';
+
+    // 초기화
+    var honeyFlow = document.getElementById('failHoneyFlow');
+    var dirty = document.getElementById('failDirty');
+    var labelBox = document.getElementById('failLabelBox');
+    var retryBtn = document.getElementById('retryBtn');
+    honeyFlow.style.height = '0px';
+    honeyFlow.style.display = 'block';
+    dirty.style.display = 'none';
+    labelBox.style.display = 'none';
+    retryBtn.style.display = 'none';
+
+    // 꿀이 흐르는 애니메이션 (3초)
+    var duration = 3000;
+    var start = null;
+    function animateHoneyFlow(timestamp) {
+      if (!start) start = timestamp;
+      var elapsed = timestamp - start;
+      var maxHeight = 180;
+      var height = Math.min(maxHeight, (elapsed / duration) * maxHeight);
+      honeyFlow.style.height = height + 'px';
+      honeyFlow.style.top = (43) + 'px';
+      if (elapsed < duration) {
+        requestAnimationFrame(animateHoneyFlow);
+      } else {
+        // 통이 더럽혀지는 효과
+        honeyFlow.style.display = 'none';
+        dirty.style.display = 'block';
+        // 1초 후 결과 박스와 버튼 표시
+        setTimeout(function() {
+          labelBox.style.display = 'block';
+          retryBtn.style.display = 'block';
+        }, 1000);
+      }
+    }
+    requestAnimationFrame(animateHoneyFlow);
+  };
+
+  // 다시시도하기 버튼 클릭 시 stage2 화면으로 복귀
+  document.getElementById('retryBtn').addEventListener('click', function() {
+    document.getElementById('failPage').style.display = 'none';
+    document.getElementById('stage2Page').style.display = 'flex';
+  });
+</script>
+<!-- ...existing code... -->
