@@ -331,14 +331,14 @@
         <div class="jar-honey"></div>
       </div>
       <div class="honey-label">
-        바러스효과로 인해 통이 더렵혀질 위험에 처했습니다. 어떻게 해야할까요?
+        '바러스효과'로 인해 통이 더렵혀질 위험에 처했습니다. 어떻게 해야할까요?
       </div>
     </div>
     <button class="choice-btn" id="choice1">
-      길고 가는, 주입구 출구쪽으로 갈수록 점진적으로 넓어지는 노즐을 사용한다.
+     주입구 출구쪽으로 갈수록 점진적으로 넓어지는 노즐을 사용한다.
     </button>
     <button class="choice-btn" id="choice2">
-      짧고 굵은, 일자형 노즐을 사용한다.
+     일자형 노즐을 사용한다.
     </button>
   </div>
   <!-- 실패 애니메이션 및 결과 화면 -->
@@ -359,7 +359,7 @@
       </div>
     </div>
     <div class="fail-label-box" id="failLabelBox">
-      짧고 굵은, 일자형 노즐을 사용함으로써 '바러스효과'가 극대화 되었습니다.<br>
+      일자형 노즐을 사용함으로써 '바러스효과'가 극대화 되었습니다.<br>
       다시 시도 하십시오
     </div>
     <button class="retry-btn" id="retryBtn">다시시도하기</button>
@@ -375,10 +375,11 @@
   });
 
   // "길고 가는..." 선택지(정답) 예시
-  document.getElementById('choice1').onclick = function() {
-    alert('정답! (다음 단계로 이동하도록 구현하세요)');
-    // location.href = 'stage3.html';
-  };
+// ...existing code...
+document.getElementById('choice1').onclick = function() {
+  location.href = 'stage2.html';
+};
+// ...existing code...
 
   // "짧고 굵은..." 선택지(오답) - 애니메이션 및 결과
   document.getElementById('choice2').onclick = function() {
